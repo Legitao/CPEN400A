@@ -4,15 +4,97 @@
 	height: 100%;
 } */
 
+html, body {
+    height: 100%;
+}
+
+#content {
+    display: flex;
+    flex: 1;
+    justify-content: space-around;
+    background-color: aqua;
+}
+
+#logo {
+    width: 20%;
+}
+
+#banner {
+    width: 80%;
+}
+
+#header {
+    background-color: hotpink;
+    display: flex;
+    justify-content: space-around;
+    height: 100px;
+}
+
 #menu {
     width: 20%;
-    height: 100%;
     float: left;
     list-style: none;
+    background-color: green;
+    list-style-position: inside;
+}
+
+.menuItem {
+    display: flex;
+    flex: 1;
+    font-size: 40px;
+}
+
+.menuItem:hover{
+    background-color: purple;
 }
 
 #productList {
-    width: 85%;
-    height: 100%;
-	/* float: right; */
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+    width: 90%;
+    background-color: red;
+}
+
+#productList li {
+    list-style-type: none;
+}
+
+.product {
+    flex: 0 0 22%; 
+    margin-bottom: 5px;
+    background-color: blue;
+}
+
+.price {
+    font-size: 20px;
+    text-align: center;
+    visibility: hidden;
+    opacity: 0;
+    color: black;
+    background-color: yellow;
+    transition: opacity .2s, visibility .2s;
+}
+
+.product:hover .price {
+    visibility: visible;
+    opacity: 1;
+  }
+
+.product img {
+    height: 100px;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    width: 50%;
+}
+
+.product:hover {
+    background-color: purple;
+}
+
+#footer {
+    font-size: 30px;
+    text-align: center;
+    background-color: deeppink;
 }
