@@ -8,11 +8,11 @@ html, body {
     height: 100%;
 }
 
-#content {
+#header {
+    background-color: hotpink;
     display: flex;
-    flex: 1;
     justify-content: space-around;
-    background-color: aqua;
+    height: 150px;
 }
 
 #logo {
@@ -23,24 +23,21 @@ html, body {
     width: 80%;
 }
 
-#header {
-    background-color: hotpink;
+#content {
     display: flex;
     justify-content: space-around;
-    height: 100px;
+    background-color: #C0C0C0;
 }
 
 #menu {
-    width: 20%;
-    float: left;
+    flex-basis: 20%;
     list-style: none;
-    background-color: green;
+    background-color: #232f3e;
     list-style-position: inside;
+    color: white;
 }
 
 .menuItem {
-    display: flex;
-    flex: 1;
     font-size: 40px;
 }
 
@@ -53,17 +50,13 @@ html, body {
     justify-content: space-around;
     flex-wrap: wrap;
     width: 90%;
-    background-color: red;
-}
-
-#productList li {
-    list-style-type: none;
 }
 
 .product {
     flex: 0 0 22%; 
     margin-bottom: 5px;
-    background-color: blue;
+    background-color: #FFF;
+    list-style-type: none;
 }
 
 .price {
@@ -93,8 +86,14 @@ html, body {
     background-color: purple;
 }
 
+.productName {
+    font-size: 20px;
+    text-align: center;
+}
+
 #footer {
     font-size: 30px;
+    color:white;
     text-align: center;
-    background-color: deeppink;
+    background-color: #010b3c;
 }
