@@ -4,15 +4,17 @@
 	height: 100%;
 } */
 
-html, body {
+body {
     height: 100%;
+    width: 1000px;
+    margin: auto;
 }
 
 #header {
     background-color: hotpink;
     display: flex;
     justify-content: space-around;
-    height: 150px;
+    height: 150px; 
 }
 
 #logo {
@@ -43,6 +45,7 @@ html, body {
 
 .menuItem:hover{
     background-color: purple;
+    color: #C0C0C0;
 }
 
 #productList {
