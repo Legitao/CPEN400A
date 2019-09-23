@@ -32,6 +32,9 @@ body {
 }
 
 #menu {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
     flex-basis: 20%;
     list-style: none;
     background-color: #232f3e;
@@ -41,6 +44,7 @@ body {
 
 .menuItem {
     font-size: 40px;
+    background-color: #010b3c;
 }
 
 .menuItem:hover{
