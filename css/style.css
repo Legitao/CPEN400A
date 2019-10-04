@@ -79,7 +79,7 @@ body {
 .product:hover .price {
     visibility: visible;
     opacity: 1;
-  }
+}
 
 .product img {
     height: 100px;
@@ -103,4 +103,35 @@ body {
     color:white;
     text-align: center;
     background-color: #010b3c;
+}
+
+.btn-add, .btn-remove {
+    visibility: hidden;
+    opacity: 0;
+}
+
+.product:hover .btn-add {
+    visibility: visible;
+    opacity: 1;
+}
+
+.product:hover .btn-remove {
+    visibility: visible;
+    opacity: 1;
+}
+
+#shoppingCart {
+    display: flex;
+    justify-content: flex-end;
+    background-color: #C0C0C0;
+    padding-top: 10px;
+}
+
+#btn-show-cart {
+    font-size: 24px;
+}
+
+#shoppingCartImage {
+    height: 30px;
+    width: 30px;
 }

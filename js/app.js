@@ -121,7 +121,13 @@ for (let i = 0; i < btns.length; i++) {
 }
 
 function showCart(cart) {
-    alert(JSON.stringify(cart));
+    let cartProducts = "";
+    for (var product in cart) {
+        console.log(cart[product]);
+        cartProducts += product + " : " + cart[product] + "\n";
+        console.log(cartProducts);
+    }
+    alert(cartProducts);
 }
 
 let btnShowCart = document.getElementById("btn-show-cart");
@@ -131,7 +137,7 @@ btnShowCart.onclick = function() {
 }
 
 
-let timeoutInMiliseconds = 6000;
+let timeoutInMiliseconds = 30000;
 let timeoutId;
 
 function startTimer() {
