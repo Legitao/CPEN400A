@@ -52,7 +52,7 @@ body {
     color: #C0C0C0;
 }
 
-#productList {
+#productView {
     display: flex;
     justify-content: space-around;
     flex-wrap: wrap;

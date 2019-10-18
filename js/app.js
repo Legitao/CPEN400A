@@ -1,12 +1,14 @@
 function Store(initialStock) {
     this.stock = initialStock;
     this.cart = {};
+    this.update = null;
 }
 
 Store.prototype.addItemToCart = function(name) {
     if(this.stock[name]["quantity"] > 0) {
         this.stock[name]["quantity"]--;
         this.cart[name] === undefined ? this.cart[name] = 1 : this.cart[name]++;
+        this.update(name);
     } else {
         alert(`Add fail. No stock for ${name}`);
     }
@@ -20,36 +22,37 @@ Store.prototype.removeItemFromCart = function(name) {
         if(this.cart[name] === 0) {
             delete this.cart[name];
         }
+        this.update(name);
     }
 }
 
 let products = {
     "Box1": {
-        "label": "box1",
+        "label": "Box1",
         "imageUrl": "images/Box1_$10.png",
         "price": 10,
         "quantity": 5
     },
     "Box2": {
-        "label": "box2",
+        "label": "Box2",
         "imageUrl": "images/Box2_$5.png",
         "price": 5,
         "quantity": 5
     },
     "Clothes1": {
-        "label": "clothes1",
+        "label": "Clothes1",
         "imageUrl": "images/Clothes1_$20.png",
         "price": 20,
         "quantity": 5
     },
     "Clothes2": {
-        "label": "clothes2",
+        "label": "Clothes2",
         "imageUrl": "images/Clothes2_$30.png",
         "price": 30,
         "quantity": 5
     },
     "Jeans": {
-        "label": "jeans",
+        "label": "Jeans",
         "imageUrl": "images/Jeans_$50.png",
         "price": 50,
         "quantity": 5
@@ -61,37 +64,37 @@ let products = {
         "quantity": 5
     },
     "Keyboard": {
-        "label": "keyboard",
+        "label": "Keyboard",
         "imageUrl": "images/Keyboard_$20.png",
         "price": 20,
         "quantity": 5
     },
     "Mice": {
-        "label": "mice",
+        "label": "Mice",
         "imageUrl": "images/Mice_$20.png",
         "price": 20,
         "quantity": 5
     },
     "PC1": {
-        "label": "pc1",
+        "label": "PC1",
         "imageUrl": "images/PC1_$350.png",
         "price": 350,
         "quantity": 5
     },
     "PC2": {
-        "label": "pc2",
-        "imageUrl": "images/PC2_$300.png",
+        "label": "PC2",
+        "imageUrl": "images/PC2_$400.png",
         "price": 400,
         "quantity": 5
     },
     "PC3": {
-        "label": "pc3",
+        "label": "PC3",
         "imageUrl": "images/PC3_$300.png",
         "price": 300,
         "quantity": 5
     },
     "Tent": {
-        "label": "tent",
+        "label": "Tent",
         "imageUrl": "images/Tent_$100.png",
         "price": 100,
         "quantity": 5
@@ -99,26 +102,31 @@ let products = {
 }
 
 let store = new Store(products);
-
-
-let btns = document.querySelectorAll(".btn-add, .btn-remove");
-for (let i = 0; i < btns.length; i++) {
-    btns[i].onclick = function() {
-        resetTimer();
-        let siblings = btns[i].parentElement.children;
-        let btnClass = btns[i].className;
-        for (let j = 0; j < siblings.length; j++) {
-            if(siblings[j].className == "productName") {
-                let productName = siblings[j].textContent;
-                if(btnClass == "btn-add") {
-                    store.addItemToCart(productName);
-                } else {
-                    store.removeItemFromCart(productName);
-                }              
-            }           
-        }        
-    }
+store.update = function(itemName) {
+    let container = document.getElementById(`product-${itemName}`);
+    renderProduct(container, store, itemName);
 }
+
+renderProductList(document.getElementById('productView'), store);
+
+// let btns = document.querySelectorAll(".btn-add, .btn-remove");
+// for (let i = 0; i < btns.length; i++) {
+//     btns[i].onclick = function() {
+//         resetTimer();
+//         let siblings = btns[i].parentElement.children;
+//         let btnClass = btns[i].className;
+//         for (let j = 0; j < siblings.length; j++) {
+//             if(siblings[j].className == "productName") {
+//                 let productName = siblings[j].textContent;
+//                 if(btnClass == "btn-add") {
+//                     store.addItemToCart(productName);
+//                 } else {
+//                     store.removeItemFromCart(productName);
+//                 }              
+//             }           
+//         }        
+//     }
+// }
 
 function showCart(cart) {
     let cartProducts = "";
@@ -137,7 +145,7 @@ btnShowCart.onclick = function() {
 }
 
 
-let timeoutInMiliseconds = 30000;
+let timeoutInMiliseconds = 30000000;
 let timeoutId;
 
 function startTimer() {
@@ -152,3 +160,62 @@ function resetTimer() {
 }
 
 startTimer();
+
+function renderProduct(container, storeInstance, itemName) {
+    let product = storeInstance['stock'][itemName];
+    let newContainer = document.createElement('li');
+    newContainer.setAttribute('class', 'product');
+
+    let img = document.createElement('img');
+    img.setAttribute('src', `${product['imageUrl']}`);
+    newContainer.appendChild(img);
+
+    let price = document.createElement('div');
+    price.setAttribute('class', 'price');
+    price.textContent = `$${product['price']}`;
+    newContainer.appendChild(price);
+
+    let name = document.createElement('div');
+    name.setAttribute('class', 'productName');
+    name.textContent = product['label'];
+    newContainer.appendChild(name);
+
+    //If the quantity of an item in stock is zero, "Add to Cart" button should not be generated.
+    if(product['quantity'] > 0) {
+        let add = document.createElement('button');
+        add.setAttribute('type', 'button');
+        add.setAttribute('class', 'btn-add');
+        add.textContent = 'Add';
+        add.onclick = function() {
+            console.log("clicklcdddd");
+            resetTimer();
+            store.addItemToCart(itemName);                           
+        }
+        newContainer.appendChild(add);
+    }
+
+    //If the quantity of an item in cart is zero, "Remove from Cart" button should not be generated.
+    if(storeInstance['cart'][itemName] > 0) {
+        let remove = document.createElement('button');
+        remove.setAttribute('type', 'button');
+        remove.setAttribute('class', 'btn-remove');
+        remove.textContent = 'Remove';
+        newContainer.appendChild(remove);
+    }
+
+    container.innerHTML = newContainer.innerHTML;
+}
+
+function renderProductList(container, storeInstance) {
+    //First clear the original content of the container
+    container.innerHTML = '';
+
+    for(let key in storeInstance['stock']) {
+        let li = document.createElement('li');
+        renderProduct(li, storeInstance, key);
+        container.appendChild(li);
+        li.setAttribute('id', `product-${key}`);
+        li.setAttribute('class', 'product');
+        container.appendChild(li);
+    }
+}
