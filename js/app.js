@@ -1,14 +1,14 @@
 function Store(initialStock) {
     this.stock = initialStock;
     this.cart = {};
-    this.update = null;
+    this.onUpdate = null;
 }
 
 Store.prototype.addItemToCart = function(name) {
     if(this.stock[name]["quantity"] > 0) {
         this.stock[name]["quantity"]--;
         this.cart[name] === undefined ? this.cart[name] = 1 : this.cart[name]++;
-        this.update(name);
+        this.onUpdate(name);
     } else {
         alert(`Add fail. No stock for ${name}`);
     }
@@ -22,7 +22,7 @@ Store.prototype.removeItemFromCart = function(name) {
         if(this.cart[name] === 0) {
             delete this.cart[name];
         }
-        this.update(name);
+        this.onUpdate(name);
     }
 }
 
@@ -102,31 +102,12 @@ let products = {
 }
 
 let store = new Store(products);
-store.update = function(itemName) {
+store.onUpdate = function(itemName) {
     let container = document.getElementById(`product-${itemName}`);
     renderProduct(container, store, itemName);
 }
 
 renderProductList(document.getElementById('productView'), store);
-
-// let btns = document.querySelectorAll(".btn-add, .btn-remove");
-// for (let i = 0; i < btns.length; i++) {
-//     btns[i].onclick = function() {
-//         resetTimer();
-//         let siblings = btns[i].parentElement.children;
-//         let btnClass = btns[i].className;
-//         for (let j = 0; j < siblings.length; j++) {
-//             if(siblings[j].className == "productName") {
-//                 let productName = siblings[j].textContent;
-//                 if(btnClass == "btn-add") {
-//                     store.addItemToCart(productName);
-//                 } else {
-//                     store.removeItemFromCart(productName);
-//                 }              
-//             }           
-//         }        
-//     }
-// }
 
 function showCart(cart) {
     let cartProducts = "";
@@ -186,11 +167,17 @@ function renderProduct(container, storeInstance, itemName) {
         add.setAttribute('type', 'button');
         add.setAttribute('class', 'btn-add');
         add.textContent = 'Add';
-        add.onclick = function() {
-            console.log("clicklcdddd");
-            resetTimer();
-            store.addItemToCart(itemName);                           
-        }
+        // add.addEventListener("click", function() {
+        //     console.log("clicklcdddd");
+        //     resetTimer();
+        //     store.addItemToCart(itemName);                           
+        // });
+        add.setAttribute('onclick', 'resetTimer(); store.addItemToCart(\"' + itemName + '\")')
+        // add.onclick = function() {
+        //     console.log("clickedddd");
+        //     resetTimer();
+        //     store.addItemToCart(itemName);                           
+        // }
         newContainer.appendChild(add);
     }
 
@@ -200,6 +187,7 @@ function renderProduct(container, storeInstance, itemName) {
         remove.setAttribute('type', 'button');
         remove.setAttribute('class', 'btn-remove');
         remove.textContent = 'Remove';
+        remove.setAttribute('onclick', 'resetTimer(); store.removeItemFromCart(\"' + itemName + '\")')
         newContainer.appendChild(remove);
     }
 
