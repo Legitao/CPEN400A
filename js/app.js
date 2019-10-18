@@ -149,19 +149,20 @@ function renderCart(container, storeInstance){
     tr1.appendChild(th4);
 
     var totalPrice = 0;
-    for (var product in cart) {     
+    for (var itemName in cart) { 
+        let label = storeInstance['stock'][itemName]['label'];    
         let tr = document.createElement('tr');
         table.appendChild(tr);
         let item = document.createElement('td');
-        item.textContent = product;
+        item.textContent = itemName;
         tr.appendChild(item);
 
         let quantity = document.createElement('td');
-        quantity.textContent = cart[product];
+        quantity.textContent = cart[itemName];
         tr.appendChild(quantity);
 
         var tdPrice = document.createElement("td");
-        var totalItemPrice = storeInstance.stock[product].price * cart[product];
+        var totalItemPrice = storeInstance.stock[itemName].price * cart[itemName];
         tdPrice.setAttribute("class", "cart-table-data");
         tdPrice.textContent = "$" + totalItemPrice;
         tr.appendChild(tdPrice);
@@ -171,14 +172,14 @@ function renderCart(container, storeInstance){
         addBtn.setAttribute('type', 'button');
         addBtn.setAttribute('class', 'editbtn');
         addBtn.textContent = '+';
-        addBtn.setAttribute('onclick', 'resetTimer(); store.addItemToCart(\"' + product + '\")')
+        addBtn.setAttribute('onclick', 'resetTimer(); store.addItemToCart(\"' + label + '\")')
         tr.appendChild(addBtn);
 
         let subBtn =  document.createElement('button');
         subBtn.setAttribute('type', 'button');
         subBtn.setAttribute('class', 'editbtn');
         subBtn.textContent = '-';
-        subBtn.setAttribute('onclick', 'resetTimer(); store.removeItemFromCart(\"' + product + '\")')
+        subBtn.setAttribute('onclick', 'resetTimer(); store.removeItemFromCart(\"' + label + '\")')
         tr.appendChild(subBtn);
         
     }
@@ -283,6 +284,7 @@ function renderProductList(container, storeInstance) {
 
     for(let key in storeInstance['stock']) {
         let li = document.createElement('li');
+        let label = storeInstance['stock'][key]['label']
         renderProduct(li, storeInstance, key);
         container.appendChild(li);
         li.setAttribute('id', `product-${key}`);
