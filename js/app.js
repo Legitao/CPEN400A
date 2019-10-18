@@ -120,9 +120,60 @@ function hideCart() {
     modal.style.visibility = "hidden";
 }
 
+function renderCart(container, storeInstance){
+
+    let cart = storeInstance.cart;
+
+    let table = document.createElement('table');
+    let tr1 = document.createElement('tr');
+    let th1 = document.createElement('th');
+    th1.textContent = 'Product Name';
+    let th2 = document.createElement('th');
+    th2.textContent = 'Product Quantity';
+    let th3 = document.createElement('th');
+    let th4 = document.createElement('th');
+    table.appendChild(tr1);
+    tr1.appendChild(th1);
+    tr1.appendChild(th2);
+    tr1.appendChild(th3);
+    tr1.appendChild(th4);
+
+    for (var product in cart) {
+        console.log(product);
+        console.log(cart[product]);        
+
+        let tr = document.createElement('tr');
+        let item = document.createElement('td');
+        item.textContent = product;
+        tr.appendChild(item);
+
+        let quantity = document.createElement('td');
+        quantity.textContent = cart[product];
+        tr.appendChild(quantity);
+
+        let addBtn =  document.createElement('button');
+        addBtn.setAttribute('type', 'button');
+        addBtn.setAttribute('class', 'btn-add');
+        addBtn.textContent = '+';
+        addBtn.setAttribute('onclick', 'resetTimer(); store.addItemToCart(\"' + itemName + '\")')
+        tr.appendChild(addBtn);
+
+        let subBtn =  document.createElement('button');
+        subBtn.setAttribute('type', 'button');
+        subBtn.setAttribute('class', 'btn-remove');
+        subBtn.textContent = '-';
+        subBtn.setAttribute('onclick', 'resetTimer(); store.removeItemFromCart(\"' + itemName + '\")')
+        tr.appendChild(subBtn);
+    }
+
+    container.innerHTML = table.innerHTML;
+}
+
 let btnShowCart = document.getElementById("btn-show-cart");
 btnShowCart.onclick = function() {
-    showCart(store.cart);
+    //showCart(store.cart);
+    console.log('hello');
+    renderCart(store.cart);
     resetTimer();
 }
 
