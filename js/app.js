@@ -110,13 +110,14 @@ store.onUpdate = function(itemName) {
 renderProductList(document.getElementById('productView'), store);
 
 function showCart(cart) {
-    let cartProducts = "";
-    for (var product in cart) {
-        console.log(cart[product]);
-        cartProducts += product + " : " + cart[product] + "\n";
-        console.log(cartProducts);
-    }
-    alert(cartProducts);
+    let modal = document.getElementById("modal");
+    modal.style.visibility = "visible";
+    renderCart(document.getElementById("modal-content"), store);
+}
+
+function hideCart() {
+    let modal = document.getElementById("modal");
+    modal.style.visibility = "hidden";
 }
 
 let btnShowCart = document.getElementById("btn-show-cart");
