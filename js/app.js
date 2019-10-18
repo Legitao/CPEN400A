@@ -105,11 +105,12 @@ let store = new Store(products);
 store.onUpdate = function(itemName) {
     let container = document.getElementById(`product-${itemName}`);
     renderProduct(container, store, itemName);
+    renderCart(document.getElementById('modal-content'), store);
 }
 
 renderProductList(document.getElementById('productView'), store);
 
-function showCart(cart) {
+function showCart() {
     let modal = document.getElementById("modal");
     modal.style.visibility = "visible";
     renderCart(document.getElementById("modal-content"), store);
@@ -121,6 +122,10 @@ function hideCart() {
 }
 
 function renderCart(container, storeInstance){
+    // Clear the container first
+    while(container.firstChild) {
+        container.removeChild(container.firstChild);
+    }
 
     let cart = storeInstance.cart;
 
@@ -130,19 +135,23 @@ function renderCart(container, storeInstance){
     th1.textContent = 'Product Name';
     let th2 = document.createElement('th');
     th2.textContent = 'Product Quantity';
+    let th25 = document.createElement('th');
+    th25.textContent = 'tD_price';
     let th3 = document.createElement('th');
+    th3.textContent = 'Add';
     let th4 = document.createElement('th');
+    th4.textContent = 'Sub';
     table.appendChild(tr1);
     tr1.appendChild(th1);
     tr1.appendChild(th2);
+    tr1.appendChild(th25)
     tr1.appendChild(th3);
     tr1.appendChild(th4);
 
-    for (var product in cart) {
-        console.log(product);
-        console.log(cart[product]);        
-
+    var totalPrice = 0;
+    for (var product in cart) {     
         let tr = document.createElement('tr');
+        table.appendChild(tr);
         let item = document.createElement('td');
         item.textContent = product;
         tr.appendChild(item);
@@ -151,29 +160,44 @@ function renderCart(container, storeInstance){
         quantity.textContent = cart[product];
         tr.appendChild(quantity);
 
+        var tdPrice = document.createElement("td");
+        var totalItemPrice = storeInstance.stock[product].price * cart[product];
+        tdPrice.setAttribute("class", "cart-table-data");
+        tdPrice.textContent = "$" + totalItemPrice;
+        tr.appendChild(tdPrice);
+        totalPrice += totalItemPrice;
+
         let addBtn =  document.createElement('button');
         addBtn.setAttribute('type', 'button');
-        addBtn.setAttribute('class', 'btn-add');
+        addBtn.setAttribute('class', 'editbtn');
         addBtn.textContent = '+';
-        addBtn.setAttribute('onclick', 'resetTimer(); store.addItemToCart(\"' + itemName + '\")')
+        addBtn.setAttribute('onclick', 'resetTimer(); store.addItemToCart(\"' + product + '\")')
         tr.appendChild(addBtn);
 
         let subBtn =  document.createElement('button');
         subBtn.setAttribute('type', 'button');
-        subBtn.setAttribute('class', 'btn-remove');
+        subBtn.setAttribute('class', 'editbtn');
         subBtn.textContent = '-';
-        subBtn.setAttribute('onclick', 'resetTimer(); store.removeItemFromCart(\"' + itemName + '\")')
+        subBtn.setAttribute('onclick', 'resetTimer(); store.removeItemFromCart(\"' + product + '\")')
         tr.appendChild(subBtn);
+        
     }
 
-    container.innerHTML = table.innerHTML;
+        // total due row
+        var totalDueRow = document.createElement("tr");
+        
+        td = document.createElement("td");
+        td.textContent = totalPrice;
+        totalDueRow.appendChild(td);
+        table.appendChild(totalDueRow);
+    container.appendChild(table);
 }
 
 let btnShowCart = document.getElementById("btn-show-cart");
 btnShowCart.onclick = function() {
-    //showCart(store.cart);
-    console.log('hello');
-    renderCart(store.cart);
+    showCart(store.cart);
+    // console.log('hello');
+    // renderCart(store.cart);
     resetTimer();
 }
 
@@ -195,23 +219,28 @@ function resetTimer() {
 startTimer();
 
 function renderProduct(container, storeInstance, itemName) {
+    // Clear the container first
+    while(container.firstChild) {
+        container.removeChild(container.firstChild);
+    }
+
     let product = storeInstance['stock'][itemName];
-    let newContainer = document.createElement('li');
-    newContainer.setAttribute('class', 'product');
+    // let newContainer = document.createElement('li');
+    container.setAttribute('class', 'product');
 
     let img = document.createElement('img');
     img.setAttribute('src', `${product['imageUrl']}`);
-    newContainer.appendChild(img);
+    container.appendChild(img);
 
     let price = document.createElement('div');
     price.setAttribute('class', 'price');
     price.textContent = `$${product['price']}`;
-    newContainer.appendChild(price);
+    container.appendChild(price);
 
     let name = document.createElement('div');
     name.setAttribute('class', 'productName');
     name.textContent = product['label'];
-    newContainer.appendChild(name);
+    container.appendChild(name);
 
     //If the quantity of an item in stock is zero, "Add to Cart" button should not be generated.
     if(product['quantity'] > 0) {
@@ -224,13 +253,14 @@ function renderProduct(container, storeInstance, itemName) {
         //     resetTimer();
         //     store.addItemToCart(itemName);                           
         // });
-        add.setAttribute('onclick', 'resetTimer(); store.addItemToCart(\"' + itemName + '\")')
-        // add.onclick = function() {
-        //     console.log("clickedddd");
-        //     resetTimer();
-        //     store.addItemToCart(itemName);                           
-        // }
-        newContainer.appendChild(add);
+        // add.setAttribute('onclick', 'resetTimer(); store.addItemToCart(\"' + itemName + '\")')
+        add.onclick = function() {
+            console.log("clickedddd");
+            resetTimer();
+            store.addItemToCart(itemName);                           
+        }
+        container.appendChild(add);
+        //innerHTML is bad, why?(onclick doesn't work)
     }
 
     //If the quantity of an item in cart is zero, "Remove from Cart" button should not be generated.
@@ -240,15 +270,16 @@ function renderProduct(container, storeInstance, itemName) {
         remove.setAttribute('class', 'btn-remove');
         remove.textContent = 'Remove';
         remove.setAttribute('onclick', 'resetTimer(); store.removeItemFromCart(\"' + itemName + '\")')
-        newContainer.appendChild(remove);
+        container.appendChild(remove);
     }
 
-    container.innerHTML = newContainer.innerHTML;
 }
 
 function renderProductList(container, storeInstance) {
-    //First clear the original content of the container
-    container.innerHTML = '';
+    // Clear the container first
+    while(container.firstChild) {
+        container.removeChild(container.firstChild);
+    }
 
     for(let key in storeInstance['stock']) {
         let li = document.createElement('li');
