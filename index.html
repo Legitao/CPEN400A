@@ -9,6 +9,19 @@
   <meta charset="UTF-8">
 </head>
 <body>
+  <div id='modal'>
+    <!-- <header id='modal-header'> -->
+    <div id='modal-dialog'>
+      My Cart Items
+      <button id='btn-hide-cart' type="button" onclick="hideCart()" >
+        <!-- ✕ -->
+        &times;
+      </button>
+      <p id='modal-content'></p>
+    </div>
+    <!-- </header> -->
+  </div>
+
   <div id="header">
     <img id="logo" src="images/logo.jpg">
     <img id="banner" src="images/banner.jpg">
@@ -120,11 +133,6 @@
   </div>
   <div id="footer">
     Contact Information
-  </div>
-
-  <div id='modal'>
-    <div id='modal-content'></div>
-    <button id='btn-hide-cart' type="button" onclick="hideCart()" ></button>
   </div>
   
   <!-- ?? Put script tag in head, button doesn't work-->

@@ -121,6 +121,15 @@ function hideCart() {
     modal.style.visibility = "hidden";
 }
 
+// hide cart when escape key is pressed
+document.onkeydown = function(evt) {
+    evt = evt || window.event;
+    if (evt.keyCode == 27) {
+        // escape key
+        hideCart();
+    }
+};
+
 function renderCart(container, storeInstance){
     // Clear the container first
     while(container.firstChild) {
@@ -136,7 +145,7 @@ function renderCart(container, storeInstance){
     let th2 = document.createElement('th');
     th2.textContent = 'Product Quantity';
     let th25 = document.createElement('th');
-    th25.textContent = 'tD_price';
+    th25.textContent = 'Product Price';
     let th3 = document.createElement('th');
     th3.textContent = 'Add';
     let th4 = document.createElement('th');
@@ -168,30 +177,43 @@ function renderCart(container, storeInstance){
         tr.appendChild(tdPrice);
         totalPrice += totalItemPrice;
 
+        let add = document.createElement('td');
+        tr.appendChild(add);
+        let sub = document.createElement('td');
+        tr.appendChild(sub);
+
         let addBtn =  document.createElement('button');
         addBtn.setAttribute('type', 'button');
-        addBtn.setAttribute('class', 'editbtn');
+        addBtn.setAttribute('class', 'btn addbtn');
         addBtn.textContent = '+';
         addBtn.setAttribute('onclick', 'resetTimer(); store.addItemToCart(\"' + label + '\")')
-        tr.appendChild(addBtn);
+        add.appendChild(addBtn);
 
         let subBtn =  document.createElement('button');
         subBtn.setAttribute('type', 'button');
-        subBtn.setAttribute('class', 'editbtn');
+        subBtn.setAttribute('class', 'btn subbtn');
         subBtn.textContent = '-';
         subBtn.setAttribute('onclick', 'resetTimer(); store.removeItemFromCart(\"' + label + '\")')
-        tr.appendChild(subBtn);
+        sub.appendChild(subBtn);
         
     }
 
-        // total due row
-        var totalDueRow = document.createElement("tr");
+    // // total due row
+    // var totalDueRow = document.createElement("tr");
         
-        td = document.createElement("td");
-        td.textContent = totalPrice;
-        totalDueRow.appendChild(td);
-        table.appendChild(totalDueRow);
+    // td = document.createElement("td");
+    // td.textContent = totalPrice;
+    // totalDueRow.appendChild(td);
+    // table.appendChild(totalDueRow);
+
+    let totalDue = document.createElement('div');
+    totalDue.setAttribute('class', 'totalDue');
+    totalDue.textContent = "Total Price: $" + totalPrice;
+    // table.appendChild(totalDue);
+
+
     container.appendChild(table);
+    container.appendChild(totalDue);
 }
 
 let btnShowCart = document.getElementById("btn-show-cart");
