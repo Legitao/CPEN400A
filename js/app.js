@@ -121,11 +121,10 @@ function hideCart() {
     modal.style.visibility = "hidden";
 }
 
-// hide cart when escape key is pressed
+// hide cart when ESC key is pressed
 document.onkeydown = function(evt) {
     evt = evt || window.event;
-    if (evt.keyCode == 27) {
-        // escape key
+    if (evt.keyCode == 27) { //ESC key
         hideCart();
     }
 };
@@ -198,19 +197,9 @@ function renderCart(container, storeInstance){
         
     }
 
-    // // total due row
-    // var totalDueRow = document.createElement("tr");
-        
-    // td = document.createElement("td");
-    // td.textContent = totalPrice;
-    // totalDueRow.appendChild(td);
-    // table.appendChild(totalDueRow);
-
     let totalDue = document.createElement('div');
     totalDue.setAttribute('class', 'totalDue');
     totalDue.textContent = "Total Price: $" + totalPrice;
-    // table.appendChild(totalDue);
-
 
     container.appendChild(table);
     container.appendChild(totalDue);
@@ -219,8 +208,6 @@ function renderCart(container, storeInstance){
 let btnShowCart = document.getElementById("btn-show-cart");
 btnShowCart.onclick = function() {
     showCart(store.cart);
-    // console.log('hello');
-    // renderCart(store.cart);
     resetTimer();
 }
 
@@ -271,12 +258,6 @@ function renderProduct(container, storeInstance, itemName) {
         add.setAttribute('type', 'button');
         add.setAttribute('class', 'btn-add');
         add.textContent = 'Add';
-        // add.addEventListener("click", function() {
-        //     console.log("clicklcdddd");
-        //     resetTimer();
-        //     store.addItemToCart(itemName);                           
-        // });
-        // add.setAttribute('onclick', 'resetTimer(); store.addItemToCart(\"' + itemName + '\")')
         add.onclick = function() {
             console.log("clickedddd");
             resetTimer();
