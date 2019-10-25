@@ -1,5 +1,6 @@
-function Store(initialStock) {
-    this.stock = initialStock;
+function Store(serverUrl) {
+    this.serverUrl = serverUrl;
+    this.stock = {};
     this.cart = {};
     this.onUpdate = null;
 }
@@ -26,83 +27,16 @@ Store.prototype.removeItemFromCart = function(name) {
     }
 }
 
-let products = {
-    "Box1": {
-        "label": "Box1",
-        "imageUrl": "images/Box1_$10.png",
-        "price": 10,
-        "quantity": 5
-    },
-    "Box2": {
-        "label": "Box2",
-        "imageUrl": "images/Box2_$5.png",
-        "price": 5,
-        "quantity": 5
-    },
-    "Clothes1": {
-        "label": "Clothes1",
-        "imageUrl": "images/Clothes1_$20.png",
-        "price": 20,
-        "quantity": 5
-    },
-    "Clothes2": {
-        "label": "Clothes2",
-        "imageUrl": "images/Clothes2_$30.png",
-        "price": 30,
-        "quantity": 5
-    },
-    "Jeans": {
-        "label": "Jeans",
-        "imageUrl": "images/Jeans_$50.png",
-        "price": 50,
-        "quantity": 5
-    },
-    "KeyboardCombo": {
-        "label": "KeyboardCombo",
-        "imageUrl": "images/KeyboardCombo_$40.png",
-        "price": 40,
-        "quantity": 5
-    },
-    "Keyboard": {
-        "label": "Keyboard",
-        "imageUrl": "images/Keyboard_$20.png",
-        "price": 20,
-        "quantity": 5
-    },
-    "Mice": {
-        "label": "Mice",
-        "imageUrl": "images/Mice_$20.png",
-        "price": 20,
-        "quantity": 5
-    },
-    "PC1": {
-        "label": "PC1",
-        "imageUrl": "images/PC1_$350.png",
-        "price": 350,
-        "quantity": 5
-    },
-    "PC2": {
-        "label": "PC2",
-        "imageUrl": "images/PC2_$400.png",
-        "price": 400,
-        "quantity": 5
-    },
-    "PC3": {
-        "label": "PC3",
-        "imageUrl": "images/PC3_$300.png",
-        "price": 300,
-        "quantity": 5
-    },
-    "Tent": {
-        "label": "Tent",
-        "imageUrl": "images/Tent_$100.png",
-        "price": 100,
-        "quantity": 5
-    }
-}
-
-let store = new Store(products);
+// Store.prototype.syncWithServer = function (onSync) {
+//     this.stock = ajaxGet(this.serverUrl + '/products', )
+// }
+let serverUrl = 'https://cpen400a-bookstore.herokuapp.com';
+let store = new Store(serverUrl);
 store.onUpdate = function(itemName) {
+    if(itemName === undefined) {
+        renderProductList(document.getElementById('productView'), store);
+        return;
+    }
     let container = document.getElementById(`product-${itemName}`);
     renderProduct(container, store, itemName);
     renderCart(document.getElementById('modal-content'), store);
@@ -293,5 +227,38 @@ function renderProductList(container, storeInstance) {
         li.setAttribute('id', `product-${key}`);
         li.setAttribute('class', 'product');
         container.appendChild(li);
+    }
+}
+
+function ajaxGet(Url, onSuccess, onError) {
+    let xhr = new XMLHttpRequest();
+    xhr.open('GET', Url);
+    xhr.onload = function() {
+        if(this.status == 200) {
+            let data = JSON.parse(this.responseText);
+            onSuccess(data);
+        }
+        if(this.status == 500) {
+            getRetry();
+        }
+    }
+    xhr.onerror = getRetry;
+    xhr.timeout = 2000;
+    xhr.ontimeout = getRetry;
+    xhr.send();
+
+
+    let retry = 1;
+    function getRetry() {
+        if(retry < 3) {
+            retry++;
+            xhr.open('GET', Url);
+            xhr.send();
+        } else {
+            let errMessage = xhr.responseText || "Timed out";
+            console.log("numRetries = " + retry + ": " + errMessage);
+            onError(errMessage);
+            return;
+        }
     }
 }
