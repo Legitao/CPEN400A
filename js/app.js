@@ -27,11 +27,47 @@ Store.prototype.removeItemFromCart = function(name) {
     }
 }
 
-// Store.prototype.syncWithServer = function (onSync) {
-//     this.stock = ajaxGet(this.serverUrl + '/products', )
-// }
+Store.prototype.syncWithServer = function(onSync) {
+    // console.log(this); //It's Store object
+    let thisStore = this;
+    let delta = {};
+    function onSuccess(response) {
+        // console.log(response);
+        // console.log(this); //It's global window object!!
+        // console.log(store);
+        let stock = thisStore.stock;       
+        for(let key in response) {
+            let oldPrice = stock[key] === undefined ? 0 : stock[key]['price'];
+            let oldQuantity = stock[key] === undefined ? 0 : stock[key]['quantity'];
+            let newPrice = response[key]['price'];
+            let newQuantity = response[key]['quantity'];
+            delta[key] = { //delta.key doesn't expand the key variable
+                price: newPrice - oldPrice,
+                quantity: newQuantity - oldQuantity
+            };
+        }
+        //I think we never need to change cart quantinty
+        //stock = response //wrong
+        thisStore.stock = response;
+        // for(let key in response) {
+            
+        //     stock[key]['quantity'] = response[key]['quantity'];
+        //     stock[key]['price'] = response[key]['price'];
+        // }
+        console.log(stock);
+        thisStore.onUpdate();
+        if(onSync != null) {
+            onSync(delta);
+        }
+    }
+    let onError = null;
+    ajaxGet(this.serverUrl + '/products', onSuccess, onError);
+    
+}
+
 let serverUrl = 'https://cpen400a-bookstore.herokuapp.com';
 let store = new Store(serverUrl);
+store.syncWithServer();
 store.onUpdate = function(itemName) {
     if(itemName === undefined) {
         renderProductList(document.getElementById('productView'), store);
