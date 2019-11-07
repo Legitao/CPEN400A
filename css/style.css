@@ -187,6 +187,28 @@ body {
     cursor: pointer;
 }
 
+#btn-check-out {
+    display: flex;
+    justify-content: flex-end;
+    color: #aaaaaa;
+    float: right;
+    font-weight: bold;
+    border-radius: 12px;
+    padding-bottom: 5px;
+    padding-left: 15px;
+    padding-right: 15px;
+    font-size: 20px;
+    cursor: pointer;
+}
+
+#btn-check-out:hover,
+#btn-check-out:focus{
+    background-color: pink;
+    color: #000;
+    text-decoration: none;
+    cursor: pointer;
+}
+
 table {
     font-size: 20px;
     border: 2px solid;

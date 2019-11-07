@@ -65,6 +65,44 @@ Store.prototype.syncWithServer = function(onSync) {
     
 }
 
+
+Store.prototype.checkOut = function (onFinish) {
+    console.log("checkout function")
+    var thisStore = this;
+    console.log(thisStore);
+    this.syncWithServer(function (delta) {
+        // If any of the products have changed price/quantity inform the user
+        if (Object.keys(delta).length !== 0) {
+            var deltaAlertStr = "";
+            for (var prod in thisStore.cart) {
+                if (delta.hasOwnProperty(prod)) {
+                    var currPrice = thisStore.stock[prod].price;
+                    if (delta[prod].price != 0 && currPrice - delta[prod].price != 0) {
+                        deltaAlertStr += "Price of " + prod + " changed from $" +
+                            (currPrice - delta[prod].price) + " to $" + currPrice + "\n";
+                    }
+                    var currQuantity = thisStore.stock[prod].quantity + thisStore.cart[prod];
+                    if (delta[prod].quantity != 0 && currQuantity - delta[prod].quantity != 0) {
+                        deltaAlertStr += "Quantity of " + prod + " changed from " +
+                            (currQuantity - delta[prod].quantity) + " to " + currQuantity + "\n";
+                    }
+                }
+            }
+            alert(deltaAlertStr);
+        } else {
+            var totalDue = 0;
+            for (var prod in thisStore.cart) {
+                totalDue += thisStore.cart[prod] * thisStore.stock[prod].price;
+            }
+            alert("The total price of your cart is currently $" + totalDue);
+        }
+
+        if (onFinish != null)
+            onFinish();
+    });
+}
+
+
 let serverUrl = 'https://cpen400a-bookstore.herokuapp.com';
 let store = new Store(serverUrl);
 store.syncWithServer();
@@ -89,6 +127,15 @@ function showCart() {
 function hideCart() {
     let modal = document.getElementById("modal");
     modal.style.visibility = "hidden";
+}
+
+function cartCheckOut() {
+    console.log("hi");
+    let checkOutBtn = document.getElementById("btn-check-out");
+    checkOutBtn.disabled = true;
+    store.checkOut(function () {
+        checkOutBtn.disabled = false;
+    });
 }
 
 // hide cart when ESC key is pressed
