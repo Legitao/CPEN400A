@@ -96,13 +96,12 @@ Store.prototype.checkOut = function (onFinish) {
                 }
             }
             alert(deltaAlertStr);
-        } else {
-            var totalDue = 0;
-            for (var prod in thisStore.cart) {
-                totalDue += thisStore.cart[prod] * thisStore.stock[prod].price;
-            }
-            alert("The total price of your cart is currently $" + totalDue);
         }
+        var totalDue = 0;
+        for (var prod in thisStore.cart) {
+            totalDue += thisStore.cart[prod] * thisStore.stock[prod].price;
+        }
+        alert("The total price of your cart is currently $" + totalDue);
 
         if (onFinish != null)
             onFinish();
