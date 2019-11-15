@@ -38,22 +38,29 @@ Store.prototype.syncWithServer = function(onSync) {
         let stock = thisStore.stock;       
         for(let key in response) {
             let oldPrice = stock[key] === undefined ? 0 : stock[key]['price'];
-            let oldQuantity = stock[key] === undefined ? 0 : stock[key]['quantity'];
+            let oldQuantity = stock[key] === undefined ? 0 : stock[key]['quantity'] + thisStore.cart[key];
             let newPrice = response[key]['price'];
             let newQuantity = response[key]['quantity'];
             delta[key] = { //delta.key doesn't expand the key variable
                 price: newPrice - oldPrice,
                 quantity: newQuantity - oldQuantity
             };
-        }
-        //I think we never need to change cart quantinty
-        //stock = response //wrong
-        thisStore.stock = response;
-        // for(let key in response) {
             
-        //     stock[key]['quantity'] = response[key]['quantity'];
-        //     stock[key]['price'] = response[key]['price'];
-        // }
+            //update cart and stock according to new stock
+            if(oldQuantity > newQuantity) {
+                thisStore.cart[key] = 0;
+                thisStore.stock[key]['quantity'] = response[key]['quantity'];
+            } else {
+                if(thisStore.stock[key] === undefined) { // First time fetching data from server
+                    thisStore.stock[key] = response[key];
+                } else {
+                    thisStore.stock[key]['quantity'] = response[key]['quantity'] - thisStore.cart[key];
+                }
+                
+            }
+            stock[key]['price'] = response[key]['price'];
+        }
+        
         console.log(stock);
         thisStore.onUpdate();
         if(onSync != null) {
