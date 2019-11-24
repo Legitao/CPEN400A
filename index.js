@@ -1,6 +1,9 @@
 // Require dependencies
 var path = require('path');
 var express = require('express');
+var storeDB = require('./StoreDB');
+
+var db = storeDB("mongodb://localhost:27017", "cpen400a-bookstore");
 
 // Declare application parameters
 var PORT = process.env.PORT || 3000;
@@ -27,10 +30,15 @@ app.use(cors);										// Enable CORS
 app.use('/', express.static(STATIC_ROOT));			// Serve STATIC_ROOT at URL "/" as a static resource
 
 // Configure '/products' endpoint
-app.get('/products', function(request, response) {
-	response.json({
-		Example: 'This is an Example!'
-	});
+app.get('/products', async function(request, response) {
+	var products = await db.getProducts(request.query);
+	if (products instanceof Error) {
+		response.status("500").send(products);
+	}
+	else {
+		response.status("200").send(products);
+	}
+	response.end();
 });
 
 // Start listening on TCP port
