@@ -101,8 +101,23 @@ Store.prototype.checkOut = function (onFinish) {
         for (var prod in thisStore.cart) {
             totalDue += thisStore.cart[prod] * thisStore.stock[prod].price;
         }
-        alert("The total price of your cart is currently $" + totalDue);
-
+        // alert("The total price of your cart is currently $" + totalDue);
+        if (totalDue > 0) {
+            var order = {
+                client_id: Math.random().toString(),
+                cart: thisStore.cart,
+                total: totalDue
+            }
+            ajaxPost(thisStore.serverUrl + "/checkout", order,
+                function (response) {
+                    alert("Items were successfully checked out");
+                    thisStore.cart = {};
+                    thisStore.onUpdate();
+                },
+                function (error) {
+                    alert("Error: " + error);
+                });
+        }
         if (onFinish != null)
             onFinish();
     });
@@ -335,8 +350,8 @@ function ajaxGet(Url, onSuccess, onError) {
     xhr.open('GET', Url);
     xhr.onload = function() {
         if(this.status == 200) {
-            let data = JSON.parse(this.responseText);
-            onSuccess(data);
+            let response = JSON.parse(this.responseText);
+            onSuccess(response);
         }
         if(this.status == 500) {
             getRetry();
@@ -361,6 +376,23 @@ function ajaxGet(Url, onSuccess, onError) {
             return;
         }
     }
+}
+
+function ajaxPost(url, data, onSuccess, onError) {
+    var xhr = new XMLHttpRequest();
+    xhr.open("POST", url);
+    xhr.setRequestHeader("Content-type", "application/json;charset=UTF-8");
+    xhr.onload = function () {
+        if (xhr.status == 200) {
+            let response = JSON.parse(this.responseText);
+            onSuccess(response);
+        }
+        else {
+            onError(xhr.responseText);
+        }
+    }
+    xhr.onerror = onError;
+    xhr.send(JSON.stringify(data));
 }
 
 //method provided by TA

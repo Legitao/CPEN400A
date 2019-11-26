@@ -29,7 +29,7 @@ app.use(cors);										// Enable CORS
 
 app.use('/', express.static(STATIC_ROOT));			// Serve STATIC_ROOT at URL "/" as a static resource
 
-// Configure '/products' endpoint
+// create '/products' endpoint
 app.get('/products', async function(request, response) {
 	var products = await db.getProducts(request.query);
 	if (products instanceof Error) {
@@ -37,6 +37,40 @@ app.get('/products', async function(request, response) {
 	}
 	else {
 		response.status("200").send(products);
+	}
+	response.end();
+});
+
+// create '/checkout' endpoint
+// app.post("/checkout", async function(request, response) {
+// 	var order = request.body;
+// 	var orderId = await db.addOrder(order);
+// 	if (orderId instanceof Error) {
+// 		response.status("500").send(orderId);
+// 	}
+// 	else {
+// 		response.status("200").send(orderId);
+// 	}
+// 	response.end();
+// });
+app.post("/checkout", async function(request, response) {
+	var order = request.body;
+	var validOrder = order.hasOwnProperty("client_id") && typeof order.client_id == "string" &&
+					order.hasOwnProperty("cart") && typeof order.cart == "object" &&
+					order.hasOwnProperty("total") && typeof order.total == "number";
+	if (!validOrder) {
+		var errMsg = "Request payload is not a valid Order object";
+		console.log(errMsg);
+		response.status("500").send(errMsg);
+		return;
+	}
+	var orderId = db.addOrder(order);
+	console.log('------------')
+	if (orderId instanceof Error) {
+		response.status("500").send(orderId);
+	}
+	else {
+		response.status("200").send(orderId);
 	}
 	response.end();
 });
