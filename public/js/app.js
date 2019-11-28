@@ -145,7 +145,7 @@ store.onUpdate = function(itemName) {
     }
 
     renderCart(document.getElementById('modal-content'), store);
-    renderMenu(document.getElementById('menuView', store));
+    renderMenu(document.getElementById('menuView'), store);
 }
 
 renderProductList(document.getElementById('productView'), store);
@@ -284,6 +284,7 @@ function renderProduct(container, storeInstance, itemName) {
     }
 
     let product = storeInstance['stock'][itemName];
+    console.log("product", product)
     // let newContainer = document.createElement('li');
     container.setAttribute('class', 'product');
 
@@ -335,6 +336,7 @@ function renderProductList(container, storeInstance) {
     }
 
     for(let key of displayed) {
+        console.log("key:",key);
         let li = document.createElement('li');
         let label = storeInstance['stock'][key]['label']
         renderProduct(li, storeInstance, key);
