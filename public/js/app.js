@@ -7,6 +7,7 @@ function Store(serverUrl) {
 
 Store.prototype.addItemToCart = function(name) {
     if(this.stock[name]["quantity"] > 0) {
+        console.log("button addddddd")
         this.stock[name]["quantity"]--;
         this.cart[name] === undefined ? this.cart[name] = 1 : this.cart[name]++;
         this.onUpdate(name);
@@ -234,7 +235,7 @@ function renderCart(container, storeInstance){
         addBtn.setAttribute('type', 'button');
         addBtn.setAttribute('class', 'btn addbtn');
         addBtn.textContent = '+';
-        addBtn.setAttribute('onclick', 'resetTimer(); store.addItemToCart(\"' + label + '\")')
+        addBtn.setAttribute('onclick', 'resetTimer(); store.addItemToCart(\"' + itemName + '\")')
         add.appendChild(addBtn);
 
         let subBtn =  document.createElement('button');
